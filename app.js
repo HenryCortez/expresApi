@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 class App {
     constructor() {
@@ -6,10 +7,13 @@ class App {
         this.port = process.env.PORT || 3000;
         this.setupMiddleware();
         this.setupRoutes();
+    
     }
 
     setupMiddleware() {
+        this.app.use(cors());
         this.app.use(express.json());
+        
     }
 
     setupRoutes() {
