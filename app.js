@@ -23,16 +23,17 @@ class App {
             try {
                 const { user, password } = req.body;
                 if (!user || !password) {
-                    return res.status(400).json({ error: 'User and password are required' });
+                    return res.status(400).json({ status: 400, message: 'User and password are required', data: null });
                 }
                 const result = await this.authService.login(user, password);
                 if (!result.ok) {
-                    return res.status(401).json(result);
+                    return res.status(401).json({ status: 401, message: result.message, data: null });
                 }
-                res.json(result);
+                
+                res.json({ status: 200, message: result.message, data: result.data });
             } catch (error) {
                 console.error('Login error:', error);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ status: 500, message: 'Internal server error', data: null });
             }
         });
 
@@ -41,13 +42,13 @@ class App {
             try {
                 const { user, password, email } = req.body;
                 if (!user || !password || !email) {
-                    return res.status(400).json({ error: 'User, password, and email are required' });
+                    return res.status(400).json({ status: 400, message: 'User, password, and email are required', data: null });
                 }
                 const result = await this.authService.register(user, password, email);
-                res.json(result);
+                res.json({ status: 200, message: result.message, data: result.data });
             } catch (error) {
                 console.error('Registration error:', error);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ status: 500, message: 'Internal server error', data: null });
             }
         });
     }

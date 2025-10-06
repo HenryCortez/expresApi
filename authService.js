@@ -11,12 +11,12 @@ class AuthService {
         try {
             const user = await this.db.get(sql);
             if (!user) {
-                return { ok: false, msg: 'Credenciales inválidas' };
+                return { ok: false, message: 'Credenciales inválidas', data: null };
             }
-            return { ok: true, user: user.username, id: user.id };
+            return { ok: true, message: 'Login exitoso', data: { id: user.id, user: user.username, email: user.email  } };
         } catch (error) {
             console.error('Login error:', error);
-            throw new Error('Error during login');
+            return { ok: false, message: 'Error durante el login', data: null };
         }
     }
 
@@ -29,7 +29,8 @@ class AuthService {
             const result = await this.db.run(sql);
             return { 
                 ok: true, 
-                user: { 
+                message: 'Usuario registrado exitosamente', 
+                data: { 
                     id: result.id, 
                     username: username,
                     email: email
@@ -37,7 +38,7 @@ class AuthService {
             };
         } catch (error) {
             console.error('Registration error:', error);
-            throw new Error('Error during registration');
+            return { ok: false, message: 'Error durante el registro', data: null };
         }
     }
 }
