@@ -4,12 +4,12 @@ class AuthService {
     }
 
     // VULNERABLE login method (intentionally kept for the lab)
-    async login(user, password) {
-        const sql = `SELECT id, username FROM users WHERE (username='${user}' OR email='${user}') AND password='${password}' LIMIT 1;`;
+    async login(username, password) {
+        const sql = `SELECT id, username FROM users WHERE (username=? OR email=?) AND password=? LIMIT 1;`;
         console.log('SQL:', sql);
         
         try {
-            const user = await this.db.get(sql);
+            const user = await this.db.get(sql, [username, username, password]);
             if (!user) {
                 return { ok: false, message: 'Credenciales inválidas', data: null };
             }
@@ -22,11 +22,11 @@ class AuthService {
 
     // VULNERABLE register method (intentionally kept for the lab)
     async register(username, password, email) {
-        const sql = `INSERT INTO users(username, password, email) VALUES('${username}', '${password}', '${email}');`;
+        const sql = `INSERT INTO users(username, password, email) VALUES(?, ?, ?);`;
         console.log('SQL:', sql);
 
         try {
-            const result = await this.db.run(sql);
+            const result = await this.db.run(sql, [username, password, email]);
             return { 
                 ok: true, 
                 message: 'Usuario registrado exitosamente', 
